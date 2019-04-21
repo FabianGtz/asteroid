@@ -6,8 +6,8 @@ using UnityStandardAssets.CrossPlatformInput;
 public class Player : MonoBehaviour
 {
     [Tooltip("In ms^-1")] [SerializeField] float speed = 463f;
-    [Tooltip("In m")] [SerializeField] float xRange = 111.5f;
-    [Tooltip("In m")] [SerializeField] float yRange = 40f;
+    [Tooltip("In m")] [SerializeField] float xRange = 172f;
+    [Tooltip("In m")] [SerializeField] float yRange = 84f;
 
     [SerializeField] float positionPitchFactor = 1f;
     [SerializeField] float controlPitchFactor = .5f;
@@ -22,9 +22,17 @@ public class Player : MonoBehaviour
     {
 		
 	}
-	
-	// Update is called once per frame
-	void Update ()
+        void OnCollissionEnter (Collision collision)
+    {
+        print("El jugador ha golpeado la pelota"); //debug
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        print("El jugador ahora ha golpeado otra cosa");
+    }
+
+    // Update is called once per frame
+    void Update ()
     {
         ProcessTranslation();
         ProcessRotation();
