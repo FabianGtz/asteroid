@@ -3,39 +3,41 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 
-public class Player : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
-    [Tooltip("In ms^-1")] [SerializeField] float speed = 463f;
+    [Header("General")]
+    [Tooltip("In ms^-1")] [SerializeField] float controlSpeed = 463f;
     [Tooltip("In m")] [SerializeField] float xRange = 172f;
     [Tooltip("In m")] [SerializeField] float yRange = 84f;
 
+    [Header("Screen-position Based")]
     [SerializeField] float positionPitchFactor = 1f;
     [SerializeField] float controlPitchFactor = .5f;
+
+    [Header ("Control-throw Based")]
     [SerializeField] float positionYawFactor = 1f;
     [SerializeField] float controlRollFactor = 50f;
 
 
     float xThrow, yThrow;
+    bool isControlEnabled = true; //clase booleana que determina cuando est[a encendido
     
     // Use this for initialization
-    void Start ()
-    {
-		
-	}
-        void OnCollissionEnter (Collision collision)
-    {
-        print("El jugador ha golpeado la pelota"); //debug
-    }
-    private void OnTriggerEnter(Collider other)
-    {
-        print("El jugador ahora ha golpeado otra cosa");
-    }
+    
 
     // Update is called once per frame
     void Update ()
     {
-        ProcessTranslation();
-        ProcessRotation();
+        if (isControlEnabled)
+        {
+            ProcessTranslation();
+            ProcessRotation();
+        }
+    }
+
+    void OnPlayerDeath() //mensaje desde collision handler. llamado desde string reference
+    {
+        isControlEnabled = false;
     }
 
     private void ProcessRotation()
@@ -53,8 +55,8 @@ public class Player : MonoBehaviour
         xThrow = CrossPlatformInputManager.GetAxis("Horizontal");
         yThrow = CrossPlatformInputManager.GetAxis("Vertical");
 
-        float xOffset = xThrow * speed * Time.deltaTime;
-        float yOffset = yThrow * speed * Time.deltaTime;
+        float xOffset = xThrow * controlSpeed * Time.deltaTime;
+        float yOffset = yThrow * controlSpeed * Time.deltaTime;
 
         float rawXPos = transform.localPosition.x + xOffset;
         float clampedXPos = Mathf.Clamp(rawXPos, -xRange, xRange);
